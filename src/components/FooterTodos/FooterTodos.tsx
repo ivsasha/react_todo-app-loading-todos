@@ -1,35 +1,35 @@
-import { useState } from 'react';
 import { Todo } from '../../types/Todo';
 
 type FooterTodosProps = {
   todos: Todo[];
-  filter: (typeOfSort: boolean, all?: boolean) => void;
+  filter: (typeOfSort: 'All' | 'Active' | 'Completed') => void;
   clearCompleted: () => void;
+  selected: 'All' | 'Active' | 'Completed';
 };
 
 export const FooterTodos: React.FC<FooterTodosProps> = ({
   todos,
   filter,
   clearCompleted,
+  selected,
 }) => {
-  const [selected, setSelected] = useState(1);
-
   return (
     // Hide the footer if there are no todos
     <footer className="todoapp__footer" data-cy="Footer">
       <span className="todo-count" data-cy="TodosCounter">
-        {todos.length} items left
+        {todos.filter(todo => !todo.completed).length} items left
       </span>
 
       {/* Active link should have the 'selected' class */}
       <nav className="filter" data-cy="Filter">
         <a
           href="#/"
-          className={selected === 1 ? 'filter__link selected' : 'filter__link'}
+          className={
+            selected === 'All' ? 'filter__link selected' : 'filter__link'
+          }
           data-cy="FilterLinkAll"
           onClick={() => {
-            filter(false, true);
-            setSelected(1);
+            filter('All');
           }}
         >
           All
@@ -37,11 +37,12 @@ export const FooterTodos: React.FC<FooterTodosProps> = ({
 
         <a
           href="#/active"
-          className={selected === 2 ? 'filter__link selected' : 'filter__link'}
+          className={
+            selected === 'Active' ? 'filter__link selected' : 'filter__link'
+          }
           data-cy="FilterLinkActive"
           onClick={() => {
-            filter(false);
-            setSelected(2);
+            filter('Active');
           }}
         >
           Active
@@ -49,11 +50,12 @@ export const FooterTodos: React.FC<FooterTodosProps> = ({
 
         <a
           href="#/completed"
-          className={selected === 3 ? 'filter__link selected' : 'filter__link'}
+          className={
+            selected === 'Completed' ? 'filter__link selected' : 'filter__link'
+          }
           data-cy="FilterLinkCompleted"
           onClick={() => {
-            filter(true);
-            setSelected(3);
+            filter('Completed');
           }}
         >
           Completed

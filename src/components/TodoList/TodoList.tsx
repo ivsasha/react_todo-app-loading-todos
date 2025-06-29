@@ -82,12 +82,14 @@ export const TodoList: React.FC<TodoListProps> = ({
               />
             </form>
           )}
-          {isLoadingId === item.id && (
-            <div data-cy="TodoLoader" className="modal overlay is-active">
-              <div className="modal-background has-background-white-ter" />
-              <div className="loader" />
-            </div>
-          )}
+
+          <div
+            data-cy="TodoLoader"
+            className={`modal overlay ${isLoadingId === item.id ? 'is-active' : 'hidden'}`}
+          >
+            <div className="modal-background has-background-white-ter" />
+            <div className="loader" />
+          </div>
 
           {/* Remove button appears only on hover */}
           <button

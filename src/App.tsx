@@ -13,11 +13,15 @@ import { Todo } from './types/Todo';
 import { TodoList } from './components/TodoList';
 import { FormTodo } from './components/FormTodo';
 import { FooterTodos } from './components/FooterTodos';
+import { ErrorTodos } from './components/ErrorTodos';
+
+type Filter = 'All' | 'Active' | 'Completed';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [error, setError] = useState('');
+  const [filterSelect, setFilterSelected] = useState<Filter>('All');
 
   useEffect(() => {
     getTodos()
@@ -100,14 +104,23 @@ export const App: React.FC = () => {
       });
   }
 
-  function filter(typeOfSort: boolean, all: boolean = false) {
-    if (all) {
+  function filter(typeOfSort: 'All' | 'Active' | 'Completed') {
+    if (typeOfSort === 'All') {
       setFilteredTodos(todos);
-    } else {
+      setFilterSelected('All');
+    } else if (typeOfSort === 'Active') {
       const updatedTodos = todos.filter(todo => {
-        return todo.completed === typeOfSort;
+        return todo.completed === false;
       });
 
+      setFilterSelected('Active');
+      setFilteredTodos(updatedTodos);
+    } else if (typeOfSort === 'Completed') {
+      const updatedTodos = todos.filter(todo => {
+        return todo.completed === true;
+      });
+
+      setFilterSelected('Completed');
       setFilteredTodos(updatedTodos);
     }
   }
@@ -118,6 +131,10 @@ export const App: React.FC = () => {
         removeTodos(todo.id);
       }
     });
+  }
+
+  function clearError() {
+    setError('');
   }
 
   if (!USER_ID) {
@@ -135,7 +152,7 @@ export const App: React.FC = () => {
           todos={todos}
         />
 
-        {todos && (
+        {todos.length > 0 && (
           <TodoList
             todos={filteredTodos}
             deleteTodo={removeTodos}
@@ -143,36 +160,17 @@ export const App: React.FC = () => {
           />
         )}
 
-        {todos && (
+        {todos.length > 0 && (
           <FooterTodos
             todos={todos}
             filter={filter}
             clearCompleted={clearCompleted}
+            selected={filterSelect}
           />
         )}
       </div>
 
-      {/* DON'T use conditional rendering to hide the notification */}
-      {/* Add the 'hidden' class to hide the message smoothly */}
-      <div
-        data-cy="ErrorNotification"
-        className={
-          error
-            ? 'notification is-danger is-light has-text-weight-normal'
-            : 'notification is-danger is-light has-text-weight-normal hidden'
-        }
-      >
-        <button
-          data-cy="HideErrorButton"
-          type="button"
-          className="delete"
-          onClick={() => {
-            setError('');
-          }}
-        />
-        {/* show only one message at a time */}
-        {error}
-      </div>
+      <ErrorTodos error={error} clearError={clearError} />
     </div>
   );
 };
