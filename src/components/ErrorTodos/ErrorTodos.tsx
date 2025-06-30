@@ -24,8 +24,6 @@ export const ErrorTodos: React.FC<ErrorTodosProps> = ({
 
   return (
     <>
-      {/* DON'T use conditional rendering to hide the notification */}
-      {/* Add the 'hidden' class to hide the message smoothly */}
       <div
         data-cy="ErrorNotification"
         className={classNames(
@@ -41,7 +39,6 @@ export const ErrorTodos: React.FC<ErrorTodosProps> = ({
             clearError();
           }}
         />
-        {/* show only one message at a time */}
         {error}
       </div>
     </>

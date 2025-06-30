@@ -91,7 +91,6 @@ export const TodoList: React.FC<TodoListProps> = ({
             <div className="loader" />
           </div>
 
-          {/* Remove button appears only on hover */}
           <button
             type="button"
             className="todo__remove"
